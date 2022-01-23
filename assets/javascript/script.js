@@ -94,7 +94,7 @@ function currentQuestion() {
     });
   });
   currentQuestionNumber++;
-  timer = 60;
+  time = 60;
 }
 // promises, async await
 // set timer for 60 seconds, on 60 seconds show
@@ -122,7 +122,7 @@ function stopTimer() {
   intervalID = null;
 }
 
-function resolveAfter60Seconds() {
+function endRound() {
   return new Promise((resolve) => {
     setTimeout(() => {
       stopTimer();
@@ -133,7 +133,7 @@ function resolveAfter60Seconds() {
 
 async function startRound() {
   startTimer();
-  await resolveAfter60Seconds();
+  await endRound();
 }
 
 // startRound();
