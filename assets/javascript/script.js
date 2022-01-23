@@ -66,7 +66,7 @@ let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let timer = 60;
+let time = 60;
 //DOM Variables
 const images = document.querySelector("#options");
 const questionDiv = document.querySelector("#question");
@@ -96,7 +96,6 @@ function currentQuestion() {
   currentQuestionNumber++;
   timer = 60;
 }
-currentQuestion();
 // promises, async await
 // set timer for 60 seconds, on 60 seconds show
 // image to show options to hide then switch after 3 seconds
@@ -105,17 +104,19 @@ function outOfTime() {
   images.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
 }
 let intervalID;
-function startCountDown() {
+function startTimer() {
   // check if already an interval has been set up
   if (!intervalID) {
     intervalID = setInterval(countDown, 1000);
   }
 }
-function countDown() {
-  timer--;
-  timerDiv.textContent = timer;
+
+function timer() {
+  time--;
+  timerDiv.textContent = time;
 }
-function stopCountDown() {
+
+function stopTimer() {
   clearInterval(intervalID);
   // release our intervalID from the variable
   intervalID = null;
@@ -124,17 +125,15 @@ function stopCountDown() {
 function resolveAfter60Seconds() {
   return new Promise((resolve) => {
     setTimeout(() => {
-      stopCountDown();
+      stopTimer();
       resolve(outOfTime());
     }, 1000 * 60);
   });
 }
 
-async function asyncCall() {
-  startCountDown();
-  console.log("calling");
+async function startRound() {
+  startTimer();
   await resolveAfter60Seconds();
-  // expected output: "resolved"
 }
 
-asyncCall();
+// startRound();
