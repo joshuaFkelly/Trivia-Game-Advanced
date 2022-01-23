@@ -21,6 +21,11 @@ button:hover {
   padding-right: 0;
   background-color: #ff2a6d;
 }
-#time {
+#timer {
   color: #ff2a6d;
+}
+img {
+  width: 250px;
+  height: 250px;
+  margin: auto;
 }

@@ -66,8 +66,9 @@ let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let time = 60;
+let timer = 60;
 //DOM Variables
+const images = document.querySelector("#options");
 const questionDiv = document.querySelector("#question");
 const timerDiv = document.querySelector("#timer");
 const allButtons = document.querySelectorAll("button");
@@ -90,14 +91,32 @@ function currentQuestion() {
       optionBdiv.textContent = options[1].b;
       optionCdiv.textContent = options[2].c;
       optionDdiv.textContent = options[3].d;
-      console.log(i);
     });
   });
   currentQuestionNumber++;
+  timer = 60;
 }
 currentQuestion();
+// promises, async await
+// set timer for 60 seconds, on 60 seconds show
+// image to show options to hide then switch after 3 seconds
+function outOfTime(params) {
+  questionDiv.textContent = "Oops! You ran out of time :(";
+  images.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
+  clearInterval(countDown);
 
-function answerQuestion(params) {}
-allButtons.forEach((button) => {
-  button.addEventListener("click", answerQuestion);
-});
+  setTimeout(() => {
+    images.innerHTML = "";
+    currentQuestion();
+  }, 3000);
+}
+function countDown() {
+  timer--;
+  timerDiv.textContent = timer;
+}
+function startGame() {
+  setInterval(countDown, 1000);
+  setTimeout(outOfTime, 1000 * 60);
+}
+
+startGame();
