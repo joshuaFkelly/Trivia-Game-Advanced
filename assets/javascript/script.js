@@ -104,26 +104,36 @@ function outOfTime() {
   questionDiv.textContent = "Oops! You ran out of time :(";
   images.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
 }
+let intervalID;
+function startCountDown() {
+  // check if already an interval has been set up
+  if (!intervalID) {
+    intervalID = setInterval(countDown, 1000);
+  }
+}
 function countDown() {
-  setInterval(() => {
-    timer--;
-    timerDiv.textContent = timer;
-  }, 1000);
+  timer--;
+  timerDiv.textContent = timer;
+}
+function stopCountDown() {
+  clearInterval(intervalID);
+  // release our intervalID from the variable
+  intervalID = null;
 }
 
 function resolveAfter60Seconds() {
   return new Promise((resolve) => {
     setTimeout(() => {
+      stopCountDown();
       resolve(outOfTime());
     }, 1000 * 60);
   });
 }
 
 async function asyncCall() {
-  countDown();
+  startCountDown();
   console.log("calling");
-  const result = await resolveAfter60Seconds();
-  console.log(result);
+  await resolveAfter60Seconds();
   // expected output: "resolved"
 }
 
