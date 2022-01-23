@@ -100,23 +100,31 @@ currentQuestion();
 // promises, async await
 // set timer for 60 seconds, on 60 seconds show
 // image to show options to hide then switch after 3 seconds
-function outOfTime(params) {
+function outOfTime() {
   questionDiv.textContent = "Oops! You ran out of time :(";
   images.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
-  clearInterval(countDown);
-
-  setTimeout(() => {
-    images.innerHTML = "";
-    currentQuestion();
-  }, 3000);
 }
 function countDown() {
-  timer--;
-  timerDiv.textContent = timer;
-}
-function startGame() {
-  setInterval(countDown, 1000);
-  setTimeout(outOfTime, 1000 * 60);
+  setInterval(() => {
+    timer--;
+    timerDiv.textContent = timer;
+  }, 1000);
 }
 
-startGame();
+function resolveAfter60Seconds() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(outOfTime());
+    }, 1000 * 60);
+  });
+}
+
+async function asyncCall() {
+  countDown();
+  console.log("calling");
+  const result = await resolveAfter60Seconds();
+  console.log(result);
+  // expected output: "resolved"
+}
+
+asyncCall();
