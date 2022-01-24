@@ -48,13 +48,14 @@ const triviaQuestions = [
 ];
 
 //Variables
+let intervalID;
 let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
 let time = 60;
 //DOM Variables
-const images = document.querySelector("#options");
+const optionsDiv = document.querySelector("#options");
 const questionDiv = document.querySelector("#question");
 const timerDiv = document.querySelector("#timer");
 const allButtons = document.querySelectorAll("button");
@@ -62,7 +63,7 @@ const optionAdiv = document.querySelector("#optionA");
 const optionBdiv = document.querySelector("#optionB");
 const optionCdiv = document.querySelector("#optionC");
 const optionDdiv = document.querySelector("#optionD");
-
+const startBtn = document.querySelector("#startBtn");
 // Display questions
 function currentQuestion() {
   triviaQuestions.forEach((value, i, questions) => {
@@ -84,13 +85,12 @@ function currentQuestion() {
 // image to show options to hide then switch after 3 seconds
 function outOfTime() {
   questionDiv.textContent = "Oops! You ran out of time :(";
-  images.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
+  optionsDiv.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
 }
-let intervalID;
 function startTimer() {
   // check if already an interval has been set up
   if (!intervalID) {
-    intervalID = setInterval(countDown, 1000);
+    intervalID = setInterval(timer, 1000);
   }
 }
 
@@ -115,8 +115,13 @@ function endRound() {
 }
 
 async function startRound() {
+  showOptions();
+  currentQuestion();
   startTimer();
   await endRound();
 }
-
-// startRound();
+function showOptions() {
+  optionsDiv.style.display = "block";
+  startBtn.style.display = "none";
+}
+startBtn.addEventListener("click", startRound);
