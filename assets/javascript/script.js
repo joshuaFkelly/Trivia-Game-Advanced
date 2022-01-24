@@ -46,20 +46,6 @@ const triviaQuestions = [
     ],
   },
 ];
-// setTimeout every 60 seconds display a new question,
-// setInterval every 3 seconds in between each question
-// display each question by looping through each question, displaying all
-// options to the screen, then beginning the timer
-// once a button is clicked the 60 second timer stops and the 3 second timer begins
-// each button is an option document.addEventListener() to all buttons
-// display info based correct/incorrect/unanswered
-// create a callback function to handle button clicks
-// if option correct display "Correct!" and an image of the answer
-// else if unanswered display "You ran out of time!The correct answer is: _____ "
-// and an image of the answer
-// else  option is incorrect display "Incorrect! The correct answer is: _____ "
-// and an image of the answer
-// keep track of the correct/incorrect/unanswered
 
 //Variables
 let currentQuestionNumber = 0;
@@ -76,15 +62,14 @@ const optionAdiv = document.querySelector("#optionA");
 const optionBdiv = document.querySelector("#optionB");
 const optionCdiv = document.querySelector("#optionC");
 const optionDdiv = document.querySelector("#optionD");
-// Functions
 
 // Display questions
-// turn this hardcorde in to something increments per question answered
 function currentQuestion() {
   triviaQuestions.forEach((value, i, questions) => {
     // Active Question
     const activeQuestion = questions[currentQuestionNumber].question;
     questionDiv.textContent = activeQuestion;
+    // Active Options
     const activeOptions = questions[currentQuestionNumber].options;
     activeOptions.forEach((value, i, options) => {
       optionAdiv.textContent = options[0].a;
@@ -96,8 +81,6 @@ function currentQuestion() {
   currentQuestionNumber++;
   time = 60;
 }
-// promises, async await
-// set timer for 60 seconds, on 60 seconds show
 // image to show options to hide then switch after 3 seconds
 function outOfTime() {
   questionDiv.textContent = "Oops! You ran out of time :(";
