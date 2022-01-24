@@ -124,4 +124,12 @@ function showOptions() {
   optionsDiv.style.display = "block";
   startBtn.style.display = "none";
 }
+function answer() {
+  allButtons.forEach((button, i, buttons) => {
+    button.addEventListener("click", () => {
+      console.log(`You clicked ${button.id}`);
+    });
+  });
+}
+answer();
 startBtn.addEventListener("click", startRound);
