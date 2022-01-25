@@ -46,15 +46,28 @@ const triviaQuestions = [
     ],
   },
 ];
-
+const Images = [
+  "Dinosaur_Land.png",
+  "Tatanga.png",
+  "Bowser.png",
+  "Yoshi.png",
+  "Boom_Boom.png",
+];
 //Variables
+let gameStarted = false;
+
 let intervalID;
 let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let time = 60;
+let roundTime = 60;
 //DOM Variables
+const messageDiv = document.querySelector("#message");
+const imageDiv = document.querySelector("#image");
+const startBtnDiv = document.querySelector("#startBtn");
+const currentRoundDiv = document.querySelector("#currentRound");
+const answerDiv = document.querySelector("#answer");
 const optionsDiv = document.querySelector("#options");
 const questionDiv = document.querySelector("#question");
 const timerDiv = document.querySelector("#timer");
@@ -80,12 +93,29 @@ function currentQuestion() {
     });
   });
   currentQuestionNumber++;
-  time = 60;
+  roundTime = 60;
 }
+//function to switch between answerDiv and question div
+function switchDisplay() {
+  if (answerDiv.style.display === "none") {
+    currentRoundDiv.style.display = "none";
+    answerDiv.style.display = "block";
+  } else {
+    currentRoundDiv.style.display = "block";
+    answerDiv.style.display = "none";
+  }
+}
+
 // image to show options to hide then switch after 3 seconds
+function getImage() {
+  currentImage = Images.findIndex(currentQuestionNumber);
+  return Images[currentImage];
+}
+
 function outOfTime() {
-  questionDiv.textContent = "Oops! You ran out of time :(";
-  optionsDiv.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
+  switchDisplay();
+  messageDiv.textContent = "Oops! You ran out of time :(";
+  imageDiv.innerHTML = `<img src="/assets/images/${getImage}>`;
 }
 function startTimer() {
   // check if already an interval has been set up
@@ -95,8 +125,8 @@ function startTimer() {
 }
 
 function timer() {
-  time--;
-  timerDiv.textContent = time;
+  roundTime--;
+  timerDiv.textContent = roundTime;
 }
 
 function stopTimer() {
@@ -104,32 +134,55 @@ function stopTimer() {
   // release our intervalID from the variable
   intervalID = null;
 }
-
-function endRound() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      stopTimer();
-      resolve(outOfTime());
-    }, 1000 * 60);
+function gameOver() {
+  messageDiv.textContent = "Game Over!";
+  imageDiv.innerHTML = `
+  <h3> Correct: ${correctScore} </h3> 
+  <h3> Incorrect: ${incorrectScore} </h3> 
+  <h3> Unanswered: ${unansweredScore}</h3>`;
+}
+function nextRound() {
+  if (currentQuestionNumber <= triviaQuestions.length) {
+    startRound();
+  }
+}
+function time(ms) {
+  return new Promise((resolve, reject) => {
+    if (gameStarted) {
+      setTimeout(resolve, ms);
+    } else {
+      reject(console.log("Game has not started."));
+    }
   });
 }
-
 async function startRound() {
-  showOptions();
-  currentQuestion();
-  startTimer();
-  await endRound();
+  try {
+    currentQuestion();
+
+    await time(0250);
+    switchDisplay();
+
+    await time(0500);
+    startTimer();
+
+    await time(1000 * 60);
+    stopTimer();
+    outOfTime();
+
+    await time(1000 * 63);
+    nextRound();
+  } catch (err) {
+    console.log(`ERROR: ${err}`);
+  } finally {
+    gameOver();
+    console.log("Game over! Stats displayed below.");
+  }
 }
-function showOptions() {
-  optionsDiv.style.display = "block";
+
+function startGame() {
+  currentRoundDiv.style.display = "block";
   startBtn.style.display = "none";
+  startRound();
 }
-function answer() {
-  allButtons.forEach((button, i, buttons) => {
-    button.addEventListener("click", () => {
-      console.log(`You clicked ${button.id}`);
-    });
-  });
-}
-answer();
-startBtn.addEventListener("click", startRound);
+
+startBtn.addEventListener("click", startGame);

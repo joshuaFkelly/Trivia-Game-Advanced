@@ -29,6 +29,7 @@ img {
   height: 250px;
   margin: auto;
 }
+#answer,
 #options {
   display: none;
 }

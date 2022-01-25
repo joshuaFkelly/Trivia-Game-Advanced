@@ -21,26 +21,32 @@
     </header>
 
     <div id="content" class="container text-center mt-5 pt-3">
-        <!-- This is our countdown timer. Stays the whole time -->
-        <h3>Time Remaining: <strong id="timer">60</strong> seconds</h3>
-        <!-- This will change to Correct/Incorrect/Out of Time -->
-        <h3 id="question" class="mt-3"></h3>
-        <!-- This will change to a picture of correct answer-->
-        <div id="options" class="btn-group-vertical w-100" role="group">
-            <button id="optionA" type="button" class="btn fs-3 fw-bold option">
-            </button>
-            <button id="optionB" type="button" class="btn fs-3 fw-bold option">
-            </button>
-            <button id="optionC" type="button" class="btn fs-3 fw-bold option">
-            </button>
-            <button id="optionD" type="button" class="btn fs-3 fw-bold option">
+        <div id="start">
+            <!-- Start Button -->
+            <button id="startBtn" type="button" class="btn fs-3 fw-bold"> START
             </button>
         </div>
-        <!-- Start Button -->
-        <button id="startBtn" type="button" class="btn fs-3 fw-bold"> START
-        </button>
-
-
+        <div id="answer">
+            <h3 id="message"></h3>
+            <div id="image"></div>
+        </div>
+        <div id="currentRound">
+            <!-- This is our countdown timer. Stays the whole time -->
+            <h3>Time Remaining: <strong id="timer">60</strong> seconds</h3>
+            <!-- This will change to Correct/Incorrect/Out of Time -->
+            <h3 id="question" class="mt-3"></h3>
+            <!-- This will change to a picture of correct answer-->
+            <div id="options" class="btn-group-vertical w-100" role="group">
+                <button id="optionA" type="button" class="btn fs-3 fw-bold option">
+                </button>
+                <button id="optionB" type="button" class="btn fs-3 fw-bold option">
+                </button>
+                <button id="optionC" type="button" class="btn fs-3 fw-bold option">
+                </button>
+                <button id="optionD" type="button" class="btn fs-3 fw-bold option">
+                </button>
+            </div>
+        </div>
     </div>
 </body>
 
