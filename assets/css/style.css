@@ -29,7 +29,9 @@ img {
   height: 250px;
   margin: auto;
 }
-#answer,
-#options {
+#currentRound {
+  display: none;
+}
+#answer {
   display: none;
 }

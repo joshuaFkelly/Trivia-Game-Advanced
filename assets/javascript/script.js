@@ -55,20 +55,19 @@ const Images = [
 ];
 //Variables
 let gameStarted = false;
-
 let intervalID;
 let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let roundTime = 60;
+let roundTime = 10;
 //DOM Variables
 const messageDiv = document.querySelector("#message");
 const imageDiv = document.querySelector("#image");
 const startBtnDiv = document.querySelector("#startBtn");
 const currentRoundDiv = document.querySelector("#currentRound");
 const answerDiv = document.querySelector("#answer");
-const optionsDiv = document.querySelector("#options");
+const gameOverDiv = document.querySelector("#gameOver");
 const questionDiv = document.querySelector("#question");
 const timerDiv = document.querySelector("#timer");
 const allButtons = document.querySelectorAll("button");
@@ -77,8 +76,11 @@ const optionBdiv = document.querySelector("#optionB");
 const optionCdiv = document.querySelector("#optionC");
 const optionDdiv = document.querySelector("#optionD");
 const startBtn = document.querySelector("#startBtn");
+const gameOverMsg = document.querySelector("#gameOverMessage");
+const statsDiv = document.querySelector("#stats");
 // Display questions
 function currentQuestion() {
+  currentRoundDiv.style.display = "block";
   triviaQuestions.forEach((value, i, questions) => {
     // Active Question
     const activeQuestion = questions[currentQuestionNumber].question;
@@ -93,29 +95,15 @@ function currentQuestion() {
     });
   });
   currentQuestionNumber++;
-  roundTime = 60;
-}
-//function to switch between answerDiv and question div
-function switchDisplay() {
-  if (answerDiv.style.display === "none") {
-    currentRoundDiv.style.display = "none";
-    answerDiv.style.display = "block";
-  } else {
-    currentRoundDiv.style.display = "block";
-    answerDiv.style.display = "none";
-  }
+  timerDiv.textContent = roundTime = 10;
 }
 
 // image to show options to hide then switch after 3 seconds
-function getImage() {
-  currentImage = Images.findIndex(currentQuestionNumber);
-  return Images[currentImage];
-}
-
 function outOfTime() {
-  switchDisplay();
+  currentRoundDiv.style.display = "none";
+  answerDiv.style.display = "block";
   messageDiv.textContent = "Oops! You ran out of time :(";
-  imageDiv.innerHTML = `<img src="/assets/images/${getImage}>`;
+  imageDiv.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
   unansweredScore++;
 }
 function startTimer() {
@@ -136,16 +124,35 @@ function stopTimer() {
   intervalID = null;
 }
 function gameOver() {
-  messageDiv.textContent = "Game Over!";
-  imageDiv.innerHTML = `
-  <h3> Correct: ${correctScore} </h3> 
-  <h3> Incorrect: ${incorrectScore} </h3> 
-  <h3> Unanswered: ${unansweredScore}</h3>`;
+  if (currentQuestionNumber === triviaQuestions.length) {
+    gameStarted = false;
+    startBtnDiv.style.display = "inline-block";
+    currentRoundDiv.style.display = "none";
+    gameOverDiv.style.display = "block";
+    gameOverMsg.textContent = "Game Over!";
+    statsDiv.innerHTML = `
+    Correct: ${correctScore} </br> 
+    Incorrect: ${incorrectScore} </br> 
+    Unanswered: ${unansweredScore}`;
+  }
 }
 function nextRound() {
   if (currentQuestionNumber <= triviaQuestions.length) {
+    currentRoundDiv.style.display = "block";
+    answerDiv.style.display = "none";
     startRound();
   }
+}
+function startGame(params) {
+  currentQuestionNumber = 0;
+  correctScore = 0;
+  incorrectScore = 0;
+  unansweredScore = 0;
+  currentQuestionNumber = 0;
+  gameStarted = true;
+  startBtnDiv.style.display = "none";
+  gameOverDiv.style.display = "none";
+  startRound();
 }
 function time(ms) {
   return new Promise((resolve, reject) => {
@@ -158,32 +165,21 @@ function time(ms) {
 }
 async function startRound() {
   try {
+    await time(0000);
     currentQuestion();
-
-    await time(0250);
-    switchDisplay();
-
-    await time(0500);
     startTimer();
 
-    await time(1000 * 60);
+    await time(1000 * 10);
     stopTimer();
     outOfTime();
 
-    await time(1000 * 63);
+    await time(3000);
     nextRound();
   } catch (err) {
     console.log(`ERROR: ${err}`);
   } finally {
     gameOver();
-    console.log("Game over! Stats displayed below.");
   }
-}
-
-function startGame() {
-  currentRoundDiv.style.display = "block";
-  startBtn.style.display = "none";
-  startRound();
 }
 
 startBtn.addEventListener("click", startGame);
