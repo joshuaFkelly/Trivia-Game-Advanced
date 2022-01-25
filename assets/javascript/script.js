@@ -46,12 +46,13 @@ const triviaQuestions = [
     ],
   },
 ];
+
 const Images = [
-  "Dinosaur_Land.png",
-  "Tatanga.png",
-  "Bowser.png",
-  "Yoshi.png",
-  "Boom_Boom.png",
+  `/assets/images/Dinosaur_Land.png`,
+  "/assets/images/Tatanga.png",
+  "/assets/images/Bowser.png",
+  "/assets/images/Yoshi.png",
+  "/assets/images/Boom_Boom.png",
 ];
 //Variables
 let gameStarted = false;
@@ -60,10 +61,10 @@ let currentQuestionNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let roundTime = 10;
+let roundTime = 3;
 //DOM Variables
 const messageDiv = document.querySelector("#message");
-const imageDiv = document.querySelector("#image");
+const innerBodyDiv = document.querySelector("#body");
 const startBtnDiv = document.querySelector("#startBtn");
 const currentRoundDiv = document.querySelector("#currentRound");
 const answerDiv = document.querySelector("#answer");
@@ -95,15 +96,27 @@ function currentQuestion() {
     });
   });
   currentQuestionNumber++;
-  timerDiv.textContent = roundTime = 10;
+  timerDiv.textContent = roundTime = 3;
 }
-
+// function to show image
+function showImage() {
+  const questionImage = new Image(250, 250);
+  let currentImage = currentQuestionNumber - 1;
+  questionImage.src = Images[currentImage];
+  innerBodyDiv.append(questionImage);
+}
+function removeImage(params) {
+  const newImg = document.querySelector("img");
+  console.log(newImg);
+  newImg.remove();
+}
 // image to show options to hide then switch after 3 seconds
 function outOfTime() {
   currentRoundDiv.style.display = "none";
   answerDiv.style.display = "block";
   messageDiv.textContent = "Oops! You ran out of time :(";
-  imageDiv.innerHTML = `<img src="/assets/images/Dinosaur_Land.png">`;
+  showImage();
+
   unansweredScore++;
 }
 function startTimer() {
@@ -169,12 +182,12 @@ async function startRound() {
     currentQuestion();
     startTimer();
 
-    await time(1000 * 10);
+    await time(3000);
     stopTimer();
     outOfTime();
-
     await time(3000);
     nextRound();
+    removeImage();
   } catch (err) {
     console.log(`ERROR: ${err}`);
   } finally {
