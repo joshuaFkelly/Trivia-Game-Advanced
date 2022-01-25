@@ -116,6 +116,7 @@ function outOfTime() {
   switchDisplay();
   messageDiv.textContent = "Oops! You ran out of time :(";
   imageDiv.innerHTML = `<img src="/assets/images/${getImage}>`;
+  unansweredScore++;
 }
 function startTimer() {
   // check if already an interval has been set up
