@@ -79,8 +79,49 @@ const optionDdiv = document.querySelector("#optionD");
 const startBtn = document.querySelector("#startBtn");
 const gameOverMsg = document.querySelector("#gameOverMessage");
 const statsDiv = document.querySelector("#stats");
-// Display questions
-function currentQuestion() {
+// async/ await / promise
+function time(ms) {
+  return new Promise((resolve, reject) => {
+    if (gameStarted) {
+      setTimeout(resolve, ms);
+    } else {
+      reject(console.log("Game has not started."));
+    }
+  });
+}
+async function startRound() {
+  try {
+    await time(0000);
+    loadQuestion();
+    startTimer();
+
+    await time(3000);
+    stopTimer();
+    outOfTime();
+    await time(3000);
+    nextRound();
+    removeImage();
+  } catch (err) {
+    console.log(`ERROR: ${err}`);
+  } finally {
+    gameOver();
+  }
+}
+// Start Game
+function startGame(params) {
+  currentQuestionNumber = 0;
+  correctScore = 0;
+  incorrectScore = 0;
+  unansweredScore = 0;
+  currentQuestionNumber = 0;
+  gameStarted = true;
+  startBtnDiv.style.display = "none";
+  gameOverDiv.style.display = "none";
+  startRound();
+}
+
+// Load question
+function loadQuestion() {
   currentRoundDiv.style.display = "block";
   triviaQuestions.forEach((value, i, questions) => {
     // Active Question
@@ -98,17 +139,21 @@ function currentQuestion() {
   currentQuestionNumber++;
   timerDiv.textContent = roundTime = 3;
 }
-// function to show image
-function showImage() {
-  const questionImage = new Image(250, 250);
-  let currentImage = currentQuestionNumber - 1;
-  questionImage.src = Images[currentImage];
-  innerBodyDiv.append(questionImage);
+// Timer
+function startTimer() {
+  // check if already an interval has been set up
+  if (!intervalID) {
+    intervalID = setInterval(timer, 1000);
+  }
 }
-function removeImage(params) {
-  const newImg = document.querySelector("img");
-  console.log(newImg);
-  newImg.remove();
+function timer() {
+  roundTime--;
+  timerDiv.textContent = roundTime;
+}
+function stopTimer() {
+  clearInterval(intervalID);
+  // release our intervalID from the variable
+  intervalID = null;
 }
 // image to show options to hide then switch after 3 seconds
 function outOfTime() {
@@ -116,25 +161,26 @@ function outOfTime() {
   answerDiv.style.display = "block";
   messageDiv.textContent = "Oops! You ran out of time :(";
   showImage();
-
   unansweredScore++;
 }
-function startTimer() {
-  // check if already an interval has been set up
-  if (!intervalID) {
-    intervalID = setInterval(timer, 1000);
+// function to show image
+function showImage() {
+  const questionImage = new Image(250, 250);
+  let currentImage = currentQuestionNumber - 1;
+  questionImage.src = Images[currentImage];
+  innerBodyDiv.append(questionImage);
+}
+function removeImage() {
+  const newImg = document.querySelector("img");
+  console.log(newImg);
+  newImg.remove();
+}
+function nextRound() {
+  if (currentQuestionNumber <= triviaQuestions.length) {
+    currentRoundDiv.style.display = "block";
+    answerDiv.style.display = "none";
+    startRound();
   }
-}
-
-function timer() {
-  roundTime--;
-  timerDiv.textContent = roundTime;
-}
-
-function stopTimer() {
-  clearInterval(intervalID);
-  // release our intervalID from the variable
-  intervalID = null;
 }
 function gameOver() {
   if (currentQuestionNumber === triviaQuestions.length) {
@@ -147,51 +193,6 @@ function gameOver() {
     Correct: ${correctScore} </br> 
     Incorrect: ${incorrectScore} </br> 
     Unanswered: ${unansweredScore}`;
-  }
-}
-function nextRound() {
-  if (currentQuestionNumber <= triviaQuestions.length) {
-    currentRoundDiv.style.display = "block";
-    answerDiv.style.display = "none";
-    startRound();
-  }
-}
-function startGame(params) {
-  currentQuestionNumber = 0;
-  correctScore = 0;
-  incorrectScore = 0;
-  unansweredScore = 0;
-  currentQuestionNumber = 0;
-  gameStarted = true;
-  startBtnDiv.style.display = "none";
-  gameOverDiv.style.display = "none";
-  startRound();
-}
-function time(ms) {
-  return new Promise((resolve, reject) => {
-    if (gameStarted) {
-      setTimeout(resolve, ms);
-    } else {
-      reject(console.log("Game has not started."));
-    }
-  });
-}
-async function startRound() {
-  try {
-    await time(0000);
-    currentQuestion();
-    startTimer();
-
-    await time(3000);
-    stopTimer();
-    outOfTime();
-    await time(3000);
-    nextRound();
-    removeImage();
-  } catch (err) {
-    console.log(`ERROR: ${err}`);
-  } finally {
-    gameOver();
   }
 }
 
