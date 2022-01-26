@@ -117,6 +117,7 @@ function startGame() {
   startBtnDiv.style.display = "none";
   if (stats) {
     stats.remove();
+    startRound();
   } else {
     startRound();
   }
