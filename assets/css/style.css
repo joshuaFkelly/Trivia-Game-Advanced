@@ -11,7 +11,7 @@ body {
   color: #05d9e8;
 }
 
-#content {
+#main {
   padding-left: 0;
   padding-right: 0;
   background-color: #005678;
@@ -25,13 +25,8 @@ button:hover {
   color: #ff2a6d;
 }
 img {
-  width: 250px;
-  height: 250px;
   margin: auto;
 }
-#currentRound {
-  display: none;
-}
-#answer {
+#roundContent {
   display: none;
 }

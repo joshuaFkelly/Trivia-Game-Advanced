@@ -2,7 +2,7 @@
 const triviaQuestions = [
   {
     question: "Where does Super Mario World take place?",
-    options: [
+    answers: [
       { a: "The Light Forest", correct: false },
       { b: "Dinosaur Land", correct: true },
       { c: "Grandmaster Galaxy", correct: false },
@@ -11,7 +11,7 @@ const triviaQuestions = [
   },
   {
     question: "Who kidnaps Princess Daisy?",
-    options: [
+    answers: [
       { a: "Tatanga", correct: true },
       { b: "Bowser", correct: false },
       { c: "Wario", correct: false },
@@ -20,7 +20,7 @@ const triviaQuestions = [
   },
   {
     question: "Who kidnaps Princess Peach?",
-    options: [
+    answers: [
       { a: "Tatanga", correct: false },
       { b: "Bowser Jr", correct: false },
       { c: "Waluigi", correct: false },
@@ -29,7 +29,7 @@ const triviaQuestions = [
   },
   {
     question: "Who is on the castle roof in Super Mario 64?",
-    options: [
+    answers: [
       { a: "Donkey Kong", correct: false },
       { b: "Princess Peach", correct: false },
       { c: "Yoshi", correct: true },
@@ -38,7 +38,7 @@ const triviaQuestions = [
   },
   {
     question: "Who guards the Fortress in Super Mario 64?",
-    options: [
+    answers: [
       { a: "Boom Boom", correct: true },
       { b: "Chain Chomp", correct: false },
       { c: "Lava Queen", correct: false },
@@ -57,28 +57,22 @@ const Images = [
 //Variables
 let gameStarted = false;
 let intervalID;
-let currentQuestionNumber = 0;
+let roundNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
 let roundTime = 3;
 //DOM Variables
-const messageDiv = document.querySelector("#message");
-const innerBodyDiv = document.querySelector("#body");
+const startBtn = document.querySelector("#startBtn");
 const startBtnDiv = document.querySelector("#startBtn");
-const currentRoundDiv = document.querySelector("#currentRound");
-const answerDiv = document.querySelector("#answer");
-const gameOverDiv = document.querySelector("#gameOver");
+const roundContentDiv = document.querySelector("#roundContent");
+const mainDiv = document.querySelector("#main");
 const questionDiv = document.querySelector("#question");
 const timerDiv = document.querySelector("#timer");
-const allButtons = document.querySelectorAll("button");
-const optionAdiv = document.querySelector("#optionA");
-const optionBdiv = document.querySelector("#optionB");
-const optionCdiv = document.querySelector("#optionC");
-const optionDdiv = document.querySelector("#optionD");
-const startBtn = document.querySelector("#startBtn");
-const gameOverMsg = document.querySelector("#gameOverMessage");
-const statsDiv = document.querySelector("#stats");
+const aBtn = document.querySelector("#a");
+const bBtn = document.querySelector("#b");
+const cBtn = document.querySelector("#c");
+const dBtn = document.querySelector("#d");
 // async/ await / promise
 function time(ms) {
   return new Promise((resolve, reject) => {
@@ -92,53 +86,77 @@ function time(ms) {
 async function startRound() {
   try {
     await time(0000);
-    loadQuestion();
+    loadRound();
     startTimer();
 
+    // If time elapsed
     await time(3000);
     stopTimer();
     outOfTime();
+
     await time(3000);
     nextRound();
-    removeImage();
+    gameOver();
   } catch (err) {
     console.log(`ERROR: ${err}`);
   } finally {
-    gameOver();
+    console.log("New Round");
   }
 }
-// Start Game
-function startGame(params) {
-  currentQuestionNumber = 0;
+// Start Game Button
+startBtn.addEventListener("click", startGame);
+
+// Start Game Function
+function startGame() {
+  const stats = document.querySelector("#gameOver");
+  roundNumber = 0;
   correctScore = 0;
   incorrectScore = 0;
   unansweredScore = 0;
-  currentQuestionNumber = 0;
   gameStarted = true;
   startBtnDiv.style.display = "none";
-  gameOverDiv.style.display = "none";
-  startRound();
+  if (stats) {
+    stats.remove();
+  } else {
+    startRound();
+  }
 }
 
-// Load question
-function loadQuestion() {
-  currentRoundDiv.style.display = "block";
-  triviaQuestions.forEach((value, i, questions) => {
+// Load Round
+function loadRound() {
+  triviaQuestions.forEach((round, i, rounds) => {
     // Active Question
-    const activeQuestion = questions[currentQuestionNumber].question;
-    questionDiv.textContent = activeQuestion;
-    // Active Options
-    const activeOptions = questions[currentQuestionNumber].options;
-    activeOptions.forEach((value, i, options) => {
-      optionAdiv.textContent = options[0].a;
-      optionBdiv.textContent = options[1].b;
-      optionCdiv.textContent = options[2].c;
-      optionDdiv.textContent = options[3].d;
-    });
+    const activeQuestion = rounds[roundNumber].question;
+    loadQuestion(activeQuestion);
+    // Active answers
+    const activeAnswers = rounds[roundNumber].answers;
+    loadAnswers(activeAnswers);
   });
-  currentQuestionNumber++;
+  roundContentDiv.style.display = "block";
+  roundNumber++;
   timerDiv.textContent = roundTime = 3;
 }
+
+// Load questions
+function loadQuestion(activeQuestion) {
+  const createQuestion = document.createElement("h4");
+  createQuestion.id = "question";
+  const questionDiv = document.querySelector("#question");
+  questionDiv.textContent = activeQuestion;
+}
+
+// Load answers
+function loadAnswers(activeAnswers) {
+  const A = activeAnswers[0];
+  const B = activeAnswers[1];
+  const C = activeAnswers[2];
+  const D = activeAnswers[3];
+  aBtn.textContent = A.a;
+  bBtn.textContent = B.b;
+  cBtn.textContent = C.c;
+  dBtn.textContent = D.d;
+}
+
 // Timer
 function startTimer() {
   // check if already an interval has been set up
@@ -155,45 +173,77 @@ function stopTimer() {
   // release our intervalID from the variable
   intervalID = null;
 }
-// image to show options to hide then switch after 3 seconds
+
+// Out of Time
 function outOfTime() {
-  currentRoundDiv.style.display = "none";
-  answerDiv.style.display = "block";
-  messageDiv.textContent = "Oops! You ran out of time :(";
-  showImage();
+  roundContentDiv.style.display = "none";
+  const resultDiv = document.createElement("div");
+  resultDiv.id = "result";
+  const gameMessage = document.createElement("h3");
+  gameMessage.id = "message";
+  gameMessage.textContent = "Oops! You ran out of time :(";
+  const questionImage = new Image(250, 250);
+  let currentImage = roundNumber - 1;
+  questionImage.src = Images[currentImage];
+  mainDiv.append(resultDiv);
+  resultDiv.append(gameMessage, questionImage);
   unansweredScore++;
 }
-// function to show image
-function showImage() {
-  const questionImage = new Image(250, 250);
-  let currentImage = currentQuestionNumber - 1;
-  questionImage.src = Images[currentImage];
-  innerBodyDiv.append(questionImage);
-}
-function removeImage() {
-  const newImg = document.querySelector("img");
-  console.log(newImg);
-  newImg.remove();
-}
+
+// Next Round
 function nextRound() {
-  if (currentQuestionNumber <= triviaQuestions.length) {
-    currentRoundDiv.style.display = "block";
-    answerDiv.style.display = "none";
+  const result = document.querySelector("#result");
+  console.log(result);
+  result.remove();
+  if (roundNumber <= triviaQuestions.length) {
+    roundContentDiv.style.display = "block";
     startRound();
   }
 }
+// Game Over
 function gameOver() {
-  if (currentQuestionNumber === triviaQuestions.length) {
+  if (roundNumber === triviaQuestions.length) {
     gameStarted = false;
+    const gameOverDiv = document.createElement("div");
+    gameOverDiv.id = "gameOver";
+    const gameOverMessage = document.createElement("h1");
+    gameOverMessage.id = "message";
+    gameOverMessage.textContent = "Game Over!";
+    const gameStats = document.createElement("h4");
+    gameStats.id = "stats";
+    gameStats.innerHTML = `
+      Correct: ${correctScore} </br>  
+      Incorrect: ${incorrectScore} </br> 
+      Unanswered: ${unansweredScore}</br>`;
+    roundContentDiv.style.display = "none";
+    mainDiv.append(gameOverDiv);
+    gameOverDiv.append(gameOverMessage, gameStats);
     startBtnDiv.style.display = "inline-block";
-    currentRoundDiv.style.display = "none";
-    gameOverDiv.style.display = "block";
-    gameOverMsg.textContent = "Game Over!";
-    statsDiv.innerHTML = `
-    Correct: ${correctScore} </br> 
-    Incorrect: ${incorrectScore} </br> 
-    Unanswered: ${unansweredScore}`;
   }
 }
 
-startBtn.addEventListener("click", startGame);
+// function answerBtns(A, B, C, D) {
+//   const activeAnswerBtns = document.querySelectorAll(".answer");
+//   activeAnswerBtns.forEach((btn, i, btns) => {
+//     btn.addEventListener("click", isCorrect);
+//   });
+// }
+// function isCorrect(A, B, C, D) {
+//   const expr = true;
+//   switch (expr) {
+//     case A.correct:
+//       console.log(`${A.a} is the correct answer!`);
+//       break;
+//     case B.correct:
+//       console.log(`${B.b} is the correct answer!`);
+//       break;
+//     case C.correct:
+//       console.log(`${C.c} is the correct answer!`);
+//       break;
+//     case D.correct:
+//       console.log(`${D.d} is the correct answer!`);
+//       break;
+//     default:
+//       console.log(`That is the incorrect answer!`);
+//   }
+// }
