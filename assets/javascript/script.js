@@ -61,7 +61,7 @@ let roundNumber = 0;
 let correctScore = 0;
 let incorrectScore = 0;
 let unansweredScore = 0;
-let roundTime = 3;
+let roundTime = 60;
 //DOM Variables
 const startBtn = document.querySelector("#startBtn");
 const startBtnDiv = document.querySelector("#startBtn");
@@ -73,6 +73,8 @@ const aBtn = document.querySelector("#a");
 const bBtn = document.querySelector("#b");
 const cBtn = document.querySelector("#c");
 const dBtn = document.querySelector("#d");
+const allAnswers = document.querySelectorAll(".answer");
+
 // async/ await / promise
 function time(ms) {
   return new Promise((resolve, reject) => {
@@ -90,7 +92,7 @@ async function startRound() {
     startTimer();
 
     // If time elapsed
-    await time(3000);
+    await time(1000 * 60);
     stopTimer();
     outOfTime();
 
@@ -135,7 +137,7 @@ function loadRound() {
   });
   roundContentDiv.style.display = "block";
   roundNumber++;
-  timerDiv.textContent = roundTime = 3;
+  timerDiv.textContent = roundTime = 60;
 }
 
 // Load questions
@@ -148,6 +150,7 @@ function loadQuestion(activeQuestion) {
 
 // Load answers
 function loadAnswers(activeAnswers) {
+  // console.log(activeAnswers);
   const A = activeAnswers[0];
   const B = activeAnswers[1];
   const C = activeAnswers[2];
@@ -157,7 +160,10 @@ function loadAnswers(activeAnswers) {
   cBtn.textContent = C.c;
   dBtn.textContent = D.d;
 }
-
+// Give answers click event
+allAnswers.forEach((btn, index, btns) => {
+  btn.addEventListener("click", isCorrect);
+});
 // Timer
 function startTimer() {
   // check if already an interval has been set up
@@ -222,29 +228,23 @@ function gameOver() {
     startBtnDiv.style.display = "inline-block";
   }
 }
-
-// function answerBtns(A, B, C, D) {
-//   const activeAnswerBtns = document.querySelectorAll(".answer");
-//   activeAnswerBtns.forEach((btn, i, btns) => {
-//     btn.addEventListener("click", isCorrect);
-//   });
-// }
-// function isCorrect(A, B, C, D) {
-//   const expr = true;
-//   switch (expr) {
-//     case A.correct:
-//       console.log(`${A.a} is the correct answer!`);
-//       break;
-//     case B.correct:
-//       console.log(`${B.b} is the correct answer!`);
-//       break;
-//     case C.correct:
-//       console.log(`${C.c} is the correct answer!`);
-//       break;
-//     case D.correct:
-//       console.log(`${D.d} is the correct answer!`);
-//       break;
-//     default:
-//       console.log(`That is the incorrect answer!`);
-//   }
-// }
+// If correct, or if incorrect
+function isCorrect() {
+  const expr = true;
+  switch (expr) {
+    case A.correct:
+      console.log(`${A.a} is the correct answer!`);
+      break;
+    case B.correct:
+      console.log(`${B.b} is the correct answer!`);
+      break;
+    case C.correct:
+      console.log(`${C.c} is the correct answer!`);
+      break;
+    case D.correct:
+      console.log(`${D.d} is the correct answer!`);
+      break;
+    default:
+      console.log(`That is the incorrect answer!`);
+  }
+}
