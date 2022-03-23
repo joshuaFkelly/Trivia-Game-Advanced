@@ -219,8 +219,8 @@ function gameOver() {
     const gameStats = document.createElement("h4");
     gameStats.id = "stats";
     gameStats.innerHTML = `
-      Correct: ${correctScore} </br>  
-      Incorrect: ${incorrectScore} </br> 
+      Correct: ${correctScore} </br>
+      Incorrect: ${incorrectScore} </br>
       Unanswered: ${unansweredScore}</br>`;
     roundContentDiv.style.display = "none";
     mainDiv.append(gameOverDiv);
